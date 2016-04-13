@@ -1,8 +1,15 @@
+#!/usr/bin/expect
 set sourceDirectory [exec find /home/collard/UniversityofC/CSI -maxdepth 1 -mindepth 1 -type d]
 
  foreach {directory} $sourceDirectory {
 
 set filename [exec basename $directory]
-#set filen [exec echo $filename.txt]
+set filen [exec echo $filename.txt]
+exec touch $filen
+set outputFile [open $filen w]
 
+puts $outputFile  "* USER NAME ==> $filename"
+set fileopen [open $directory/name.txt]
+puts $outputFile  "\n* FULL NAME ==> [read $fileopen]"
+close $fileopen
 }
