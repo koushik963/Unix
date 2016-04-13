@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+jsgddjg
 int main() {
 
   // input the house width
