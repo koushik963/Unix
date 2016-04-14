@@ -41,6 +41,7 @@ puts $outputFile  "\n COMPILING & RUNNING\n"
 puts $outputFile  "\ncc $directory/house.c -o $filename.out\n"
 if [catch {exec cc $directory/house.c -o $filename.out} outputResult] {	
 puts $outputFile "$outputResult"
+close $outputFile
 } else {
 
 puts $outputFile "\nSTATUS: SUCCESFULLY COMPILED"
@@ -49,6 +50,7 @@ puts $outputFile "\nTEST CASE 1\n"
 close $outputFile
 interactInput $filename $fn 05 42
 set file [open $fn a]
+
 puts $outputFile "\nTEST CASE 2\n"
 close $outputFile
 interactInput $filename $fn 75 11
@@ -58,7 +60,7 @@ close $outputFile
 interactInput $filename $fn 44 18
 
 }
-exec enscript -2 -B -Ec -q -p $filename.ps $fn
+exec enscript -2 --color=1 -B -Ec -q -p $filename.ps $fn
 exec ps2pdf14 $filename.ps $filename.pdf
 
 }
