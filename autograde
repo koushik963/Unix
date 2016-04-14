@@ -1,22 +1,67 @@
 #!/usr/bin/expect
-set sourceDirectory [exec find /home/collard/UniversityofC/CSI -maxdepth 1 -mindepth 1 -type d]
 
- foreach {directory} $sourceDirectory {
+proc interactInput {filename filewrite width depth} {
+log_file -a $filewrite
+spawn -noecho ./$filename.out
+
+expect\
+{
+-re ".*width.*" { send "$width\n" }
+-re ".*depth.*" { send "$depth\n" }
+}
+
+expect \
+{
+-re ".*width.*" { send "$width\n" }
+-re  ".*depth.*" { send "$depth\n" }
+}
+interact
+log_file
+}
+
+set sourceDirectory [exec find /home/collard/UniversityOfC/CSI -maxdepth 1 -mindepth 1 -type d]
+foreach {directory} $sourceDirectory {
 
 set filename [exec basename $directory]
-set filen [exec echo $filename.txt]
-exec touch $filen
-set outputFile [open $filen w]
+set fn [exec echo $filename.txt]
+exec touch $fn
+set outputFile [open $fn w]
 
-puts $outputFile  "* USER NAME ==> $filename"
+puts $outputFile  " USER NAME: $filename"
+#fullname=$(cat $dir/name.txt)
 set fileopen [open $directory/name.txt]
-puts $outputFile  "\n* FULL NAME ==> [read $fileopen]"
+puts $outputFile  "\n FULL NAME: [read $fileopen]"
 close $fileopen
-puts $outputFile  "\n* SOURCE CODE"
-puts $outputFile  "\n* ========================"
+puts $outputFile  "\n SOURCE CODE"
+puts $outputFile  "\n ========================"
 set fileopen [open $directory/house.c]
 puts $outputFile  "\n[read $fileopen]"
 close $fileopen
-puts $outputFile  "\n* COMPILING & RUN\n"
-puts $outputFile  "\ncc $dir/house.c -o $filename.out\n"
+puts $outputFile  "\n COMPILING & RUNNING\n"
+puts $outputFile  "\ncc $directory/house.c -o $filename.out\n"
+if [catch {exec cc $directory/house.c -o $filename.out} outputResult] {	
+puts $outputFile "$outputResult"
+} else {
+
+puts $outputFile "\nSTATUS: SUCCESFULLY COMPILED"
+puts $outputFile "\n======RESULTS====="
+puts $outputFile "\nTEST CASE 1\n"
+close $outputFile
+interactInput $filename $fn 05 42
+set file [open $fn a]
+puts $outputFile "\nTEST CASE 2\n"
+close $outputFile
+interactInput $filename $fn 75 11
+set file [open $fn a]
+puts $outputFile "\nTEST CASE 3\n"
+close $outputFile
+interactInput $filename $fn 44 18
+
 }
+exec enscript -2 -B -Ec -q -p $filename.ps $fn
+exec ps2pdf14 $filename.ps $filename.pdf
+
+}
+file delete {*}[glob *.txt]
+file delete {*}[glob *.ps]
+file delete {*}[glob *.out]
