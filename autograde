@@ -12,4 +12,11 @@ puts $outputFile  "* USER NAME ==> $filename"
 set fileopen [open $directory/name.txt]
 puts $outputFile  "\n* FULL NAME ==> [read $fileopen]"
 close $fileopen
+puts $outputFile  "\n* SOURCE CODE"
+puts $outputFile  "\n* ========================"
+set fileopen [open $directory/house.c]
+puts $outputFile  "\n[read $fileopen]"
+close $fileopen
+puts $outputFile  "\n* COMPILING & RUN\n"
+puts $outputFile  "\ncc $dir/house.c -o $filename.out\n"
 }
